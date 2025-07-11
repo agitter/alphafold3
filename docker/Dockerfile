@@ -64,8 +64,10 @@ RUN build_data
 # ENV XLA_FLAGS="--xla_disable_hlo_passes=custom-kernel-fusion-rewriter"
 # (no need to disable gemm in that case as it is not supported for such GPU).
 ENV XLA_FLAGS="--xla_gpu_enable_triton_gemm=false"
-# Memory settings used for folding up to 5,120 tokens on A100 80 GB.
-ENV XLA_PYTHON_CLIENT_PREALLOCATE=true
-ENV XLA_CLIENT_MEM_FRACTION=0.95
+# Memory settings used for folding more than 5,120 tokens
+# See https://github.com/google-deepmind/alphafold3/blob/main/docs/performance.md#unified-memory
+ENV XLA_PYTHON_CLIENT_PREALLOCATE=false
+ENV TF_FORCE_UNIFIED_MEMORY=true
+ENV XLA_CLIENT_MEM_FRACTION=3.2
 
 CMD ["python3", "run_alphafold.py"]
